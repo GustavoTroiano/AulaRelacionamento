@@ -1,6 +1,7 @@
 ﻿using AulaRelacionamento.Entidades;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +16,19 @@ namespace AulaRelacionamento.Controllers
         {
             db = contexto;
         }
+
+        public ActionResult MeusFavoritos(int id)
+        {
+            Models.MeusFavoritosModel model =
+            new Models.MeusFavoritosModel();
+            model.UsuarioId = id;
+            model.todosFilmes = db.FILMES.ToList();
+            model.favoritos = db.USUARIOS_FILMES.Where(
+            a => a.UsuarioId == id
+            ).Include(a => a.filme).ToList();
+            return View(model);
+        }
+
 
         public ActionResult Index()
         {
